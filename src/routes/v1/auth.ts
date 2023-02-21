@@ -7,7 +7,7 @@ import { validatorLogin, validatorRegister, validatorChangePassword } from 'midd
 const router = Router();
 
 router.post('/login', [validatorLogin], login);
-router.post('/register', [validatorRegister], register);
+router.post('/sign-up', [validatorRegister], register);
 router.post('/change-password', [checkJwt, validatorChangePassword], changePassword);
 
 export default router;

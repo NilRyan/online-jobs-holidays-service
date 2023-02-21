@@ -21,16 +21,16 @@ describe('Users', () => {
   adminUser.email = 'brandon.mayhew@test.com';
   adminUser.password = userPassword;
   adminUser.hashPassword();
-  adminUser.role = 'ADMINISTRATOR' as Role;
+  adminUser.role = 'ADMIN' as Role;
 
-  let standardUserToken = null;
-  const standardUser = new User();
-  standardUser.username = 'Toddy';
-  standardUser.name = 'Todd Alquist';
-  standardUser.email = 'todd.alquist@test.com';
-  standardUser.password = userPassword;
-  standardUser.hashPassword();
-  standardUser.role = 'STANDARD' as Role;
+  let subscriberUserToken = null;
+  const subscriberUser = new User();
+  subscriberUser.username = 'Toddy';
+  subscriberUser.name = 'Todd Alquist';
+  subscriberUser.email = 'todd.alquist@test.com';
+  subscriberUser.password = userPassword;
+  subscriberUser.hashPassword();
+  subscriberUser.role = 'SUBSCRIBER' as Role;
 
   before(async () => {
     dbConnection = await dbCreateConnection();
@@ -38,15 +38,15 @@ describe('Users', () => {
   });
 
   beforeEach(async () => {
-    await userRepository.save([adminUser, standardUser]);
+    await userRepository.save([adminUser, subscriberUser]);
     let res = await request(app).post('/v1/auth/login').send({ email: adminUser.email, password: userPassword });
     adminUserToken = res.body.data;
-    res = await request(app).post('/v1/auth/login').send({ email: standardUser.email, password: userPassword });
-    standardUserToken = res.body.data;
+    res = await request(app).post('/v1/auth/login').send({ email: subscriberUser.email, password: userPassword });
+    subscriberUserToken = res.body.data;
   });
 
   afterEach(async () => {
-    await userRepository.delete([adminUser.id, standardUser.id]);
+    await userRepository.delete([adminUser.id, subscriberUser.id]);
   });
 
   describe('GET /v1/auth/users', () => {
@@ -58,13 +58,13 @@ describe('Users', () => {
     });
 
     it('should report error of unauthorized user', async () => {
-      const res = await request(app).get('/v1/users').set('Authorization', standardUserToken);
+      const res = await request(app).get('/v1/users').set('Authorization', subscriberUserToken);
       expect(res.status).to.equal(401);
       expect(res.body.errorType).to.equal('Unauthorized');
       expect(res.body.errorMessage).to.equal('Unauthorized - Insufficient user rights');
       expect(res.body.errors).to.eql([
         'Unauthorized - Insufficient user rights',
-        'Current role: STANDARD. Required role: ADMINISTRATOR',
+        'Current role: SUBSCRIBER. Required role: ADMIN',
       ]);
       expect(res.body.errorRaw).to.an('null');
       expect(res.body.errorsValidation).to.an('null');

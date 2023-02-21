@@ -28,7 +28,7 @@ export class User {
   name: string;
 
   @Column({
-    default: 'STANDARD' as Role,
+    default: 'SUBSCRIBER' as Role,
     length: 30,
   })
   role: string;

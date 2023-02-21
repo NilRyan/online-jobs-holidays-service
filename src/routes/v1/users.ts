@@ -7,12 +7,12 @@ import { validatorEdit } from 'middleware/validation/users';
 
 const router = Router();
 
-router.get('/', [checkJwt, checkRole(['ADMINISTRATOR'])], list);
+router.get('/', [checkJwt, checkRole(['ADMIN'])], list);
 
-router.get('/:id([0-9]+)', [checkJwt, checkRole(['ADMINISTRATOR'], true)], show);
+router.get('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'], true)], show);
 
-router.patch('/:id([0-9]+)', [checkJwt, checkRole(['ADMINISTRATOR'], true), validatorEdit], edit);
+router.patch('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'], true), validatorEdit], edit);
 
-router.delete('/:id([0-9]+)', [checkJwt, checkRole(['ADMINISTRATOR'], true)], destroy);
+router.delete('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'], true)], destroy);
 
 export default router;
