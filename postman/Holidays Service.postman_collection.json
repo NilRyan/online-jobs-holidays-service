@@ -1,20 +1,20 @@
 {
   "info": {
-    "_postman_id": "da0fe49f-e424-4b96-8f55-49f7db0583dc",
-    "name": "RESTful API Boilerplate",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "_postman_id": "afc29e21-f11e-4a4a-ba06-0200821ce37a",
+    "name": "Holidays Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14702217"
   },
   "item": [
     {
       "name": "/auth",
       "item": [
         {
-          "name": "/login",
+          "name": "Login",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "81ebd7f4-cc11-473a-a6b3-85b003f7222b",
                 "exec": [
                   "var jsonData = JSON.parse(responseBody);",
                   "",
@@ -44,26 +44,26 @@
               "urlencoded": [
                 {
                   "key": "email",
-                  "value": "admin@admin.com",
+                  "value": "user@user.com",
                   "type": "text"
                 },
                 {
                   "key": "password",
-                  "value": "pass1",
+                  "value": "user",
                   "type": "text"
                 }
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/login",
+              "raw": "{{baseUrl}}/auth/login",
               "host": ["{{baseUrl}}"],
-              "path": ["login"]
+              "path": ["auth", "login"]
             }
           },
           "response": []
         },
         {
-          "name": "/register",
+          "name": "Sign Up",
           "request": {
             "method": "POST",
             "header": [
@@ -84,31 +84,252 @@
               "urlencoded": [
                 {
                   "key": "email",
-                  "value": "admin1@admin.com",
+                  "value": "user@user.com",
                   "type": "text"
                 },
                 {
                   "key": "password",
-                  "value": "admin",
+                  "value": "user",
                   "type": "text"
                 },
                 {
                   "key": "passwordConfirm",
-                  "value": "admin",
+                  "value": "user",
                   "type": "text"
                 }
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/register",
+              "raw": "{{baseUrl}}/auth/sign-up",
               "host": ["{{baseUrl}}"],
-              "path": ["register"]
+              "path": ["auth", "sign-up"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "/holidays",
+      "item": [
+        {
+          "name": "Get All Holidays",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept-Language",
+                "type": "text",
+                "value": "sl-SI",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "country",
+                  "value": "PH",
+                  "type": "text"
+                },
+                {
+                  "key": "year",
+                  "value": "2016",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/holidays?page=2&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidays"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "/change-password",
+          "name": "Get Holiday By Code",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept-Language",
+                "type": "text",
+                "value": "sl-SI",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "country",
+                  "value": "US",
+                  "type": "text"
+                },
+                {
+                  "key": "year",
+                  "value": "2016",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/holidays/:code",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidays", ":code"],
+              "variable": [
+                {
+                  "key": "code",
+                  "value": "US_2016-06-20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Saved Holidays",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept-Language",
+                "type": "text",
+                "value": "sl-SI",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "user_id",
+                  "value": "3",
+                  "type": "text"
+                },
+                {
+                  "key": "year",
+                  "value": "2016",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/holidays/saved",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidays", "saved"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Holiday",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "{{language}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "code",
+                  "value": "PH_2016-04-09",
+                  "type": "text"
+                },
+                {
+                  "key": "user_id",
+                  "value": "3",
+                  "type": "text"
+                },
+                {
+                  "key": "passwordConfirm",
+                  "value": "admin",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/holidays/save-holiday",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidays", "save-holiday"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unsave Holiday",
           "request": {
             "method": "POST",
             "header": [
@@ -133,233 +354,32 @@
               "mode": "urlencoded",
               "urlencoded": [
                 {
-                  "key": "password",
-                  "value": "admin",
+                  "key": "code",
+                  "value": "PH_2016-04-09",
                   "type": "text"
                 },
                 {
-                  "key": "passwordNew",
-                  "value": "admin",
+                  "key": "user_id",
+                  "value": "3",
                   "type": "text"
                 },
                 {
                   "key": "passwordConfirm",
                   "value": "admin",
-                  "type": "text"
+                  "type": "text",
+                  "disabled": true
                 }
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/change-password",
+              "raw": "{{baseUrl}}/holidays/unsave-holiday",
               "host": ["{{baseUrl}}"],
-              "path": ["change-password"]
+              "path": ["holidays", "unsave-holiday"]
             }
           },
           "response": []
         }
-      ],
-      "protocolProfileBehavior": {}
-    },
-    {
-      "name": "/misc",
-      "item": [
-        {
-          "name": "/change-language",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/x-www-form-urlencoded"
-              },
-              {
-                "key": "Accept-Language",
-                "type": "text",
-                "value": "sl-SI"
-              }
-            ],
-            "body": {
-              "mode": "urlencoded",
-              "urlencoded": [
-                {
-                  "key": "language",
-                  "value": "sl-SI",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/misc/change-language",
-              "host": ["{{baseUrl}}"],
-              "path": ["misc", "change-language"]
-            }
-          },
-          "response": []
-        }
-      ],
-      "protocolProfileBehavior": {}
-    },
-    {
-      "name": "/users",
-      "item": [
-        {
-          "name": "/",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/x-www-form-urlencoded"
-              },
-              {
-                "key": "Accept-Language",
-                "type": "text",
-                "value": "sl-SI"
-              },
-              {
-                "key": "Authorization",
-                "value": "{{token}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "urlencoded",
-              "urlencoded": []
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/:id",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/x-www-form-urlencoded"
-              },
-              {
-                "key": "Accept-Language",
-                "type": "text",
-                "value": "sl-SI"
-              },
-              {
-                "key": "Authorization",
-                "type": "text",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "urlencoded",
-              "urlencoded": []
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users/3",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "3"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/:id",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/x-www-form-urlencoded"
-              },
-              {
-                "key": "Accept-Language",
-                "type": "text",
-                "value": "sl-SI"
-              },
-              {
-                "key": "Authorization",
-                "type": "text",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "urlencoded",
-              "urlencoded": []
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users/9",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "9"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "/:id",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "name": "Content-Type",
-                "type": "text",
-                "value": "application/x-www-form-urlencoded"
-              },
-              {
-                "key": "Accept-Language",
-                "type": "text",
-                "value": "sl-SI"
-              },
-              {
-                "key": "Authorization",
-                "type": "text",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "urlencoded",
-              "urlencoded": [
-                {
-                  "key": "username",
-                  "value": "Tyrion1",
-                  "type": "text"
-                },
-                {
-                  "key": "name",
-                  "value": "test name",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users/5",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "5"]
-            }
-          },
-          "response": []
-        }
-      ],
-      "protocolProfileBehavior": {}
+      ]
     }
-  ],
-  "protocolProfileBehavior": {}
+  ]
 }
