@@ -12,7 +12,7 @@ export const viewAll = async (req: Request, res: Response, next: NextFunction) =
     const limit = req.query.limit as unknown as number;
     res.customSuccess(200, `List of holidays for ${year} and country ${country}`, paginate(page, limit, holidays));
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Can't retrieve list of users.`, null, err);
+    const customError = new CustomError(400, 'Raw', `Can't retrieve of holidays`, null, err);
     return next(customError);
   }
 };
@@ -25,7 +25,7 @@ export const viewById = async (req: Request, res: Response, next: NextFunction) 
 
     res.customSuccess(200, `Holiday for ${date} and country ${countryCode}`, isHoliday(countryCode, date));
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Can't retrieve list of users.`, null, err);
+    const customError = new CustomError(400, 'Raw', `Can't retrieve holiday`, null, err);
     return next(customError);
   }
 };

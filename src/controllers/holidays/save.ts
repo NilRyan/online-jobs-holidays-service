@@ -8,15 +8,28 @@ import { isHoliday } from './utils/holidays';
 
 export const saveHoliday = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.jwtPayload;
-    const { code } = req.body;
+    const { id, role } = req.jwtPayload;
+    const { code, user_id } = req.body;
     const holidayRepository = getRepository(Holiday);
-    const existingHolidaySaved = await holidayRepository.findOne({
-      where: {
-        user_id: id,
-        holiday_code: code,
-      },
-    });
+
+    let existingHolidaySaved;
+
+    if (role === 'ADMIN') {
+      existingHolidaySaved = await holidayRepository.findOne({
+        where: {
+          user_id,
+          holiday_code: code,
+        },
+      });
+    } else {
+      existingHolidaySaved = await holidayRepository.findOne({
+        where: {
+          user_id: id,
+          holiday_code: code,
+        },
+      });
+    }
+
     if (existingHolidaySaved) {
       return next(new CustomError(400, 'Raw', `Holiday already saved!`, null));
     }
@@ -30,7 +43,11 @@ export const saveHoliday = async (req: Request, res: Response, next: NextFunctio
     }
     const holiday = new Holiday();
     holiday.holiday_code = code;
-    holiday.user_id = id.toString();
+    if (role === 'ADMIN') {
+      holiday.user_id = user_id;
+    } else {
+      holiday.user_id = id.toString();
+    }
     holiday.start = dateIsHoliday[0].start.toISOString();
     holiday.date = dateIsHoliday[0].date;
     holiday.end = dateIsHoliday[0].end.toISOString();
@@ -45,41 +62,64 @@ export const saveHoliday = async (req: Request, res: Response, next: NextFunctio
 
 export const unsaveHoliday = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.jwtPayload;
-    const { code } = req.body;
+    const { id, role } = req.jwtPayload;
+    const { code, user_id } = req.body;
     const holidayRepository = getRepository(Holiday);
-    const existingHolidaySaved = await holidayRepository.findOne({
-      where: {
-        user_id: id,
-        holiday_code: code,
-      },
-    });
+    let existingHolidaySaved;
+
+    if (role === 'ADMIN') {
+      existingHolidaySaved = await holidayRepository.findOne({
+        where: {
+          user_id,
+          holiday_code: code,
+        },
+      });
+    } else {
+      existingHolidaySaved = await holidayRepository.findOne({
+        where: {
+          user_id: id,
+          holiday_code: code,
+        },
+      });
+    }
+
     if (!existingHolidaySaved) {
       return next(new CustomError(403, 'Raw', `Unable to delete saved holiday.`, null));
     }
+
     if (existingHolidaySaved) {
       await holidayRepository.remove(existingHolidaySaved);
     }
     res.customSuccess(200, `Holiday removed`, existingHolidaySaved);
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Can't retrieve list of users.`, null, err);
+    const customError = new CustomError(400, 'Raw', `Unable to delete saved holiday.`, null, err);
     return next(customError);
   }
 };
 
 export const viewSaved = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.jwtPayload;
-    console.log(id);
+    const { id, role } = req.jwtPayload;
+    const { user_id } = req.body;
     const holidayRepository = getRepository(Holiday);
-    const holidaysSaved = await holidayRepository.find({
-      where: {
-        user_id: id,
-      },
-    });
+    let holidaysSaved;
+
+    if (role === 'ADMIN') {
+      holidaysSaved = await holidayRepository.find({
+        where: {
+          user_id,
+        },
+      });
+    } else {
+      holidaysSaved = await holidayRepository.find({
+        where: {
+          user_id: id,
+        },
+      });
+    }
     res.customSuccess(200, `List of holidays saved`, holidaysSaved);
   } catch (err) {
-    const customError = new CustomError(400, 'Raw', `Can't retrieve list of users.`, null, err);
+    const customError = new CustomError(400, 'Raw', `Can't retrieve list of saved holidays`, null, err);
     return next(customError);
   }
 };
